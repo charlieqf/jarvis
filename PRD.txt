@@ -1,0 +1,422 @@
+Product Requirements Document (PRD)
+Product Name
+
+JARVIS
+
+Product Type
+
+Windows Desktop AI Assistant (Local-first, Agent-based)
+
+Version
+
+PRD v1.0 (Foundational / MVP+)
+
+Document Status
+
+Approved for Architecture & MVP Implementation
+
+1. Executive Summary
+
+JARVIS is a Windows desktop AI assistant designed to act as a persistent, voice-enabled, agent-driven operating companion for both general life/work tasks and advanced software development workflows.
+
+Unlike conventional chatbots or coding assistants, JARVIS integrates:
+
+A general-purpose autonomous agent engine (nanobot / OpenClaw-style)
+
+A specialized AI coding agent (OpenCode)
+
+A desktop-native interface with audio input/output and OS-level action capability
+
+JARVIS serves as a unified AI control layer over the user’s computer, tools, and workflows.
+
+2. Product Vision & Goals
+2.1 Vision
+
+To create a desktop-resident AI assistant that can:
+
+Think (reason, plan, remember)
+
+Listen and speak (audio UX)
+
+Act (open apps, run tools, modify code)
+
+Specialize when required (coding vs general tasks)
+
+JARVIS is not a chatbot UI; it is a multi-agent system with a human-centric interface.
+
+2.2 Primary Goals
+
+Provide a single assistant interface for both:
+
+General productivity (planning, memory, automation)
+
+Software development tasks (code understanding, generation, refactoring)
+
+Enable voice-first interaction without sacrificing precision or control.
+
+Support safe, explicit OS-level actions initiated via AI reasoning.
+
+Maintain clean separation of concerns between general agent intelligence and coding-specialized intelligence.
+
+2.3 Non-Goals (Explicit Exclusions)
+
+The following are out of scope for the initial product:
+
+Mobile apps
+
+Smart-home / IoT control
+
+Multi-user or enterprise tenancy
+
+Autonomous self-expanding agents
+
+Unrestricted shell or system modification
+
+Always-on wake-word detection
+
+3. Target Users
+3.1 Primary User Persona
+
+Technical professional / developer
+
+Heavy daily coding workload
+
+Comfortable with advanced tooling
+
+Seeks automation, memory, and AI leverage
+
+3.2 Secondary User Persona
+
+Knowledge worker with complex workflows
+
+Uses AI for planning, summarization, research
+
+Values voice interaction and low-friction access
+
+4. Core Product Principles
+
+Agent-first, UI-second
+Intelligence lives in agents; UI is a controllable interface.
+
+Local-first by default
+Runs on user’s machine; cloud usage is optional and explicit.
+
+Separation of Intelligence Domains
+Coding intelligence and general intelligence must not interfere.
+
+Explicit Action Authority
+AI actions affecting the system must be bounded and observable.
+
+5. System Architecture Overview
+5.1 High-Level Architecture
+┌────────────────────────────────────────────┐
+│            JARVIS Desktop Application      │
+│  (Tauri + Web UI + Audio + OS Integration) │
+└───────────────────┬────────────────────────┘
+                    │
+        ┌───────────┴───────────┐
+        │   Agent Routing Layer  │
+        │ (Intent & Mode Control)│
+        └───────────┬───────────┘
+                    │
+     ┌──────────────┴──────────────┐
+     │                              │
+┌────▼─────────┐            ┌───────▼────────┐
+│ nanobot Agent│            │ OpenCode Agent │
+│ (General AI) │            │ (Coding AI)    │
+└──────────────┘            └────────────────┘
+
+6. Agent Responsibilities
+6.1 nanobot (General Agent)
+
+Purpose:
+Handle non-coding, cross-domain tasks.
+
+Capabilities:
+
+Conversational reasoning
+
+Long-term memory
+
+Task planning
+
+Scheduling
+
+Tool orchestration
+
+OS action requests (via controlled tools)
+
+Examples:
+
+“Plan my week”
+
+“Summarize this document”
+
+“Open my finance spreadsheet”
+
+“Remember this decision”
+
+6.2 OpenCode (Coding Agent)
+
+Purpose:
+Handle software development tasks within codebases.
+
+Capabilities:
+
+Codebase exploration
+
+Code generation & refactoring
+
+Test generation
+
+Debugging assistance
+
+Build vs plan modes
+
+Controlled file edits
+
+Examples:
+
+“Refactor this function”
+
+“Add unit tests to this module”
+
+“Explain this repository architecture”
+
+6.3 Agent Coexistence Rules
+
+Agents do not share memory stores
+
+Agents may use different LLM providers
+
+Agent selection is determined by:
+
+Explicit user mode (General / Code)
+
+Intent classification (future enhancement)
+
+Agents never directly invoke each other
+
+7. Functional Requirements
+7.1 Desktop Application
+FR-1: Platform
+
+Windows 10/11 support
+
+Runs as native desktop application
+
+Optional auto-start on boot
+
+FR-2: System Tray
+
+Persistent background presence
+
+Quick open / mute / exit actions
+
+7.2 User Interface
+FR-3: Chat Interface
+
+Unified conversation window
+
+Text input and output
+
+Streaming responses
+
+FR-4: Mode Selection
+
+Explicit mode switch:
+
+“General Assistant”
+
+“Code Assistant”
+
+FR-5: Status Indicators
+
+Listening
+
+Processing
+
+Speaking
+
+Idle
+
+7.3 Audio UX
+FR-6: Speech-to-Text
+
+Push-to-talk activation
+
+Low-latency transcription
+
+Configurable STT backend
+
+FR-7: Text-to-Speech
+
+Spoken responses
+
+Interruptible playback
+
+Configurable voice backend
+
+7.4 OS-Level Actions
+FR-8: Application Control
+
+Open predefined applications
+
+Bring apps to foreground
+
+FR-9: Command Execution
+
+Whitelisted shell commands only
+
+User confirmation for risky actions
+
+7.5 Memory
+FR-10: Persistent Memory (nanobot only)
+
+Preferences
+
+Decisions
+
+Long-term notes
+
+FR-11: Code Context Memory (OpenCode only)
+
+Project-specific context
+
+Session-scoped unless explicitly saved
+
+8. Non-Functional Requirements
+8.1 Performance
+
+UI response < 100ms
+
+STT latency < 1s (local preferred)
+
+Agent reasoning async, non-blocking
+
+8.2 Reliability
+
+Graceful recovery from agent crashes
+
+UI must remain responsive if agent fails
+
+8.3 Security
+
+No unrestricted shell access
+
+No self-modifying code
+
+Clear permission boundaries
+
+9. Tech Stack (Recommended)
+9.1 Desktop Shell
+
+Tauri (Windows)
+
+9.2 Frontend
+
+React + TypeScript
+
+WebSocket for streaming
+
+Minimal UI framework
+
+9.3 General Agent Backend
+
+Python
+
+nanobot
+
+FastAPI wrapper
+
+9.4 Coding Agent Backend
+
+OpenCode (native CLI/service)
+
+Isolated runtime
+
+9.5 Audio
+
+STT: Whisper / Faster-Whisper / API
+
+TTS: Local TTS or API
+
+9.6 Storage
+
+SQLite (general memory)
+
+Local file system (code contexts)
+
+10. Safety & Control Model
+
+All OS actions are tool-based
+
+Tools require:
+
+Explicit declaration
+
+Human-readable logs
+
+No autonomous permission escalation
+
+No background self-triggered actions
+
+11. MVP Scope Definition
+Included
+
+Desktop UI
+
+Text + voice interaction
+
+nanobot integration
+
+OpenCode integration
+
+OS app launching
+
+Persistent memory (general agent)
+
+Excluded
+
+Wake-word
+
+Cloud sync
+
+Mobile access
+
+Multi-agent collaboration
+
+Auto-commit code changes
+
+12. Success Metrics
+
+Daily usability without crashes
+
+Accurate agent routing
+
+Voice interaction usable for real work
+
+OS actions executed safely
+
+Developer tasks measurably accelerated
+
+13. Future Extensions (Post-MVP)
+
+Intent auto-routing
+
+Wake-word
+
+Document RAG
+
+IDE deep integration
+
+Multi-agent workflows
+
+Cross-device sync
+
+14. Final Statement
+
+JARVIS is designed as a foundational personal AI operating layer, not a single-purpose tool.
+The architecture deliberately prioritizes separation, safety, and extensibility, enabling both general intelligence and deep coding capability to coexist without conflict.
+
+This PRD defines a strong, scalable base suitable for long-term evolution into a truly capable personal assistant.
