@@ -1,0 +1,7 @@
+{
+  "id": "toolcall_1",
+  "name": "open_app",
+  "arguments": { "app_id": "calendar" },
+  "risk": "risky",
+  "reason": "Need to check availability"
+}

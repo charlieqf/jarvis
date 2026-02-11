@@ -1,0 +1,21 @@
+{
+  "event": "permission.requested",
+  "payload": {
+    "prompt": {
+      "request_id": "perm_1",
+      "source": "general",
+      "tool": {
+        "id": "toolcall_1",
+        "name": "open_app",
+        "arguments": { "app_id": "calendar" },
+        "risk": "risky",
+        "reason": "Need to check availability"
+      },
+      "ui": {
+        "title": "Action Requires Approval",
+        "summary": "Open Calendar",
+        "detail": "JARVIS wants to open Calendar to check availability."
+      }
+    }
+  }
+}

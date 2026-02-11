@@ -4,23 +4,34 @@
 
 Maintain separate storage domains:
 
-- General memory DB (SQLite): preferences, decisions, long-term notes
+- General memory (workspace Markdown): preferences, decisions, long-term notes
 - Code context (filesystem): repo-specific session artifacts
 
 Do not share a single memory store across general and code agents.
 
-## General memory (SQLite)
+## General memory (workspace Markdown)
 
-Minimum schema (MVP):
+General memory is stored as user-readable Markdown inside the General Agent Service workspace (nanobot/OpenClaw-style):
 
-- `memory_item(id, created_at, updated_at, kind, title, content, tags_json)`
-- `memory_event(id, created_at, source, payload_json)` (optional audit/events)
+- `workspace/memory/MEMORY.md` (curated long-term memory)
+- `workspace/memory/YYYY-MM-DD.md` (daily append-only log)
 
-Retrieval strategy (MVP):
+Why:
 
-- pinned items always included
-- last N items included
-- optional keyword search over title/content
+- avoids overlapping memory systems with nanobot
+- transparent and user-editable
+- index/search can be added later without data migration
+
+## Optional: memory index (cache)
+
+For faster search and semantic recall, add an index later:
+
+- Keyword index: SQLite FTS5 (cache)
+- Semantic index: embeddings stored in SQLite (cache), optional sqlite-vec acceleration
+
+The index is not the source of truth; it can be rebuilt at any time.
+
+Related notes: `jarvis/docs/23-openclaw-learnings-memory.md`.
 
 ## Code context
 

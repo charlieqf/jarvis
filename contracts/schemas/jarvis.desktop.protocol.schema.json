@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jarvis.desktop.protocol.schema.json",
+  "title": "JARVIS Desktop Protocol (IPC + Events)",
+  "type": "object",
+  "$defs": {
+    "AgentMode": {
+      "type": "string",
+      "enum": ["general", "code"]
+    },
+    "SidecarName": {
+      "type": "string",
+      "enum": ["general_agent", "opencode"]
+    },
+    "SidecarStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "healthy"],
+      "properties": {
+        "name": { "$ref": "#/$defs/SidecarName" },
+        "healthy": { "type": "boolean" },
+        "detail": { "type": "string" },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+      }
+    },
+    "ToolCall": { "$ref": "jarvis.tool-boundary.schema.json#/$defs/ToolCall" },
+    "ToolResult": { "$ref": "jarvis.tool-boundary.schema.json#/$defs/ToolResult" },
+    "PermissionPrompt": { "$ref": "jarvis.tool-boundary.schema.json#/$defs/PermissionPrompt" },
+    "PermissionReply": { "$ref": "jarvis.tool-boundary.schema.json#/$defs/PermissionReply" },
+
+    "RunCardKind": {
+      "type": "string",
+      "enum": ["command", "patch", "test", "permission", "info"]
+    },
+    "RunCardStatus": {
+      "type": "string",
+      "enum": ["running", "pending_approval", "success", "error", "cancelled"]
+    },
+    "RunCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "kind", "status", "title"],
+      "properties": {
+        "run_id": { "type": "string", "minLength": 1 },
+        "kind": { "$ref": "#/$defs/RunCardKind" },
+        "status": { "$ref": "#/$defs/RunCardStatus" },
+        "title": { "type": "string" },
+        "summary": { "type": "string" },
+        "detail": { "type": "string" },
+        "meta": { "type": "object" }
+      }
+    },
+
+    "Command_send_chat_message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "text"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/AgentMode" },
+        "text": { "type": "string" },
+        "repo_path": { "type": "string" },
+        "conversation_id": { "type": "string" }
+      }
+    },
+    "Command_switch_mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/AgentMode" }
+      }
+    },
+    "Command_reply_permission": { "$ref": "#/$defs/PermissionReply" },
+
+    "CommandEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "args"],
+      "properties": {
+        "command": {
+          "type": "string",
+          "enum": ["send_chat_message", "switch_mode", "reply_permission"]
+        },
+        "args": {}
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "command": { "const": "send_chat_message" } } },
+          "then": { "properties": { "args": { "$ref": "#/$defs/Command_send_chat_message" } } }
+        },
+        {
+          "if": { "properties": { "command": { "const": "switch_mode" } } },
+          "then": { "properties": { "args": { "$ref": "#/$defs/Command_switch_mode" } } }
+        },
+        {
+          "if": { "properties": { "command": { "const": "reply_permission" } } },
+          "then": { "properties": { "args": { "$ref": "#/$defs/Command_reply_permission" } } }
+        }
+      ]
+    },
+
+    "Event_sidecar_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": { "status": { "$ref": "#/$defs/SidecarStatus" } }
+    },
+    "Event_chat_delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "text"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/AgentMode" },
+        "text": { "type": "string" },
+        "conversation_id": { "type": "string" },
+        "message_id": { "type": "string" }
+      }
+    },
+    "Event_chat_final": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "text"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/AgentMode" },
+        "text": { "type": "string" },
+        "conversation_id": { "type": "string" },
+        "message_id": { "type": "string" }
+      }
+    },
+    "Event_run_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "run"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/AgentMode" },
+        "run": { "$ref": "#/$defs/RunCard" },
+        "conversation_id": { "type": "string" }
+      }
+    },
+    "Event_permission_requested": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt"],
+      "properties": { "prompt": { "$ref": "#/$defs/PermissionPrompt" } }
+    },
+    "Event_audit_appended": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry"],
+      "properties": {
+        "entry": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["timestamp", "tool_name", "agent", "risk", "decision"],
+          "properties": {
+            "timestamp": { "type": "string" },
+            "tool_name": { "type": "string" },
+            "agent": { "type": "string", "enum": ["general", "code"] },
+            "risk": { "type": "string" },
+            "decision": { "type": "string" },
+            "parameters": { "type": "object" },
+            "result": {},
+            "error": {}
+          }
+        }
+      }
+    },
+
+    "EventEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event", "payload"],
+      "properties": {
+        "event": {
+          "type": "string",
+          "enum": [
+            "sidecar.status",
+            "chat.delta",
+            "chat.final",
+            "run.card",
+            "permission.requested",
+            "audit.appended"
+          ]
+        },
+        "payload": {}
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "event": { "const": "sidecar.status" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_sidecar_status" } } }
+        },
+        {
+          "if": { "properties": { "event": { "const": "chat.delta" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_chat_delta" } } }
+        },
+        {
+          "if": { "properties": { "event": { "const": "chat.final" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_chat_final" } } }
+        },
+        {
+          "if": { "properties": { "event": { "const": "run.card" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_run_card" } } }
+        },
+        {
+          "if": { "properties": { "event": { "const": "permission.requested" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_permission_requested" } } }
+        },
+        {
+          "if": { "properties": { "event": { "const": "audit.appended" } } },
+          "then": { "properties": { "payload": { "$ref": "#/$defs/Event_audit_appended" } } }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "CommandEnvelope": { "$ref": "#/$defs/CommandEnvelope" },
+    "EventEnvelope": { "$ref": "#/$defs/EventEnvelope" }
+  }
+}

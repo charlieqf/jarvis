@@ -1,0 +1,14 @@
+{
+  "event": "run.card",
+  "payload": {
+    "mode": "code",
+    "run": {
+      "run_id": "run_1",
+      "kind": "command",
+      "status": "running",
+      "title": "Run tests",
+      "summary": "pnpm test",
+      "meta": { "cwd": "C:/work/code/myrepo" }
+    }
+  }
+}

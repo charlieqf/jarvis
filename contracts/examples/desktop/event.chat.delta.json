@@ -1,0 +1,7 @@
+{
+  "event": "chat.delta",
+  "payload": {
+    "mode": "general",
+    "text": "Sure - "
+  }
+}

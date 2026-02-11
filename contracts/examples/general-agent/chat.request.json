@@ -1,0 +1,8 @@
+{
+  "general_session_id": "g_def",
+  "mode": "general",
+  "message": {
+    "parts": [{ "type": "text", "text": "Plan my day" }]
+  },
+  "stream": true
+}

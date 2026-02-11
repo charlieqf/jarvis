@@ -69,3 +69,9 @@ nanobot includes a shell tool with deny patterns, but the safest model is:
 
 - remove/disable raw shell in MVP
 - replace with Desktop-owned whitelisted actions
+
+## See also
+
+- `12-opencode-permission-policy.md` — OpenCode permission configuration template
+- `11-api-general-agent-service.md` — General Agent tool call lifecycle and SSE contract
+- `13-desktop-app.md` — Desktop tool execution engine and audit logger

@@ -1,0 +1,9 @@
+{
+  "general_session_id": "g_def",
+  "tool_result": {
+    "id": "toolcall_1",
+    "ok": true,
+    "result": "Launched Calendar",
+    "error": null
+  }
+}

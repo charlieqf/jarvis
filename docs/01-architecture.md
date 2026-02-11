@@ -25,12 +25,12 @@ The desktop app is the orchestrator. It owns the UX, safety gates, and the routi
  +----------------------------+-------------------+--------------+
                               |                   |
                               |                   |
-               +--------------v----+    +--------v-------------+
-               | General Agent Svc |    | Code Agent Svc        |
-               | (nanobot-based)   |    | (OpenCode server)     |
-               | - memory (SQLite) |    | - sessions/messages   |
-               | - planning/tools  |    | - tool permissions    |
-               +-------------------+    +-----------------------+
+                +--------------v----+    +--------v-------------+
+                | General Agent Svc |    | Code Agent Svc        |
+                | (nanobot-based)   |    | (OpenCode server)     |
+                | - memory (workspace Markdown) |    | - sessions/messages   |
+                | - planning/tools  |    | - tool permissions    |
+                +-------------------+    +-----------------------+
 ```
 
 ## Responsibilities
@@ -46,7 +46,8 @@ The desktop app is the orchestrator. It owns the UX, safety gates, and the routi
 ### General Agent Service (nanobot-based)
 
 - Handles non-coding, cross-domain tasks (planning, summarization, memory).
-- Maintains persistent memory (separate from code agent).
+- Maintains persistent memory as workspace Markdown files (nanobot/OpenClaw-style).
+- May maintain a rebuildable search index (keyword/embeddings) as a cache, but memory source of truth is readable files.
 - Requests OS actions only through the Desktop tool boundary.
 
 ### Code Agent Service (OpenCode)

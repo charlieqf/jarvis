@@ -1,0 +1,8 @@
+{
+  "command": "send_chat_message",
+  "args": {
+    "mode": "code",
+    "text": "Fix the failing tests",
+    "repo_path": "C:/work/code/myrepo"
+  }
+}

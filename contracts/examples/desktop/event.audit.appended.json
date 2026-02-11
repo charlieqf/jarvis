@@ -1,0 +1,15 @@
+{
+  "event": "audit.appended",
+  "payload": {
+    "entry": {
+      "timestamp": "2026-02-11T00:00:00Z",
+      "tool_name": "open_app",
+      "agent": "general",
+      "risk": "risky",
+      "decision": "allow_once",
+      "parameters": { "app_id": "calendar" },
+      "result": "ok",
+      "error": null
+    }
+  }
+}

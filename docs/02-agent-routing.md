@@ -37,6 +37,15 @@ JARVIS maintains:
 
 These IDs are not shared across agents.
 
+## Conversation vs window
+
+- JARVIS can use a single main chat window.
+- Internally, JARVIS still needs separate sessions for correctness:
+  - `general_session_id` for the general agent service
+  - `code_session_id` (OpenCode) plus `repo_path`
+
+Decision reference: `jarvis/docs/18-decision-log.md` (D005, D006).
+
 ## Context hygiene
 
 To preserve separation:

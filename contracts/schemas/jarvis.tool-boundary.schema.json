@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jarvis.tool-boundary.schema.json",
+  "title": "JARVIS Tool Boundary",
+  "type": "object",
+  "$defs": {
+    "RiskLevel": {
+      "type": "string",
+      "enum": ["safe", "risky", "forbidden"]
+    },
+    "ToolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "arguments", "risk"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "arguments": { "type": "object" },
+        "risk": { "$ref": "#/$defs/RiskLevel" },
+        "reason": { "type": "string" }
+      }
+    },
+    "ToolResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ok"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "result": {},
+        "error": {
+          "anyOf": [
+            { "type": "null" },
+            { "type": "string" },
+            {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["code", "message"],
+              "properties": {
+                "code": { "type": "string" },
+                "message": { "type": "string" },
+                "details": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "PermissionDecision": {
+      "type": "string",
+      "enum": ["allow_once", "deny"]
+    },
+    "PermissionPrompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "source", "tool"],
+      "properties": {
+        "request_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "enum": ["general", "opencode"] },
+        "tool": { "$ref": "#/$defs/ToolCall" },
+        "ui": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "summary": { "type": "string" },
+            "detail": { "type": "string" }
+          }
+        }
+      }
+    },
+    "PermissionReply": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "decision"],
+      "properties": {
+        "request_id": { "type": "string", "minLength": 1 },
+        "decision": { "$ref": "#/$defs/PermissionDecision" }
+      }
+    }
+  },
+  "properties": {
+    "ToolCall": { "$ref": "#/$defs/ToolCall" },
+    "ToolResult": { "$ref": "#/$defs/ToolResult" },
+    "PermissionPrompt": { "$ref": "#/$defs/PermissionPrompt" },
+    "PermissionReply": { "$ref": "#/$defs/PermissionReply" }
+  }
+}

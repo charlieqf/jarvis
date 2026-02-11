@@ -37,12 +37,15 @@ For JARVIS MVP:
 ## Memory
 
 nanobot ships with file-backed memory (markdown under `workspace/memory`).
-JARVIS PRD requires SQLite for persistent memory.
 
-Plan:
+Decision: keep nanobot's memory model as the source of truth (avoid overlap).
 
-- swap nanobot MemoryStore with a SQLite-backed store
-- keep memory domain separate from OpenCode
+- Long-term: `workspace/memory/MEMORY.md`
+- Daily log: `workspace/memory/YYYY-MM-DD.md`
+
+If we later add semantic/keyword search, implement it as a rebuildable index (cache), not the source of truth.
+
+Decision reference: `jarvis/docs/18-decision-log.md` (D013).
 
 ## Tool boundary
 

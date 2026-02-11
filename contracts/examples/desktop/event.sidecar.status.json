@@ -1,0 +1,11 @@
+{
+  "event": "sidecar.status",
+  "payload": {
+    "status": {
+      "name": "opencode",
+      "healthy": true,
+      "detail": "Healthy",
+      "port": 4096
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "command": "reply_permission",
+  "args": {
+    "request_id": "perm_1",
+    "decision": "allow_once"
+  }
+}
